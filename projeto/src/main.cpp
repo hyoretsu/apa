@@ -88,6 +88,24 @@ int main(int argc, char* argv[]) {
 
     auto graphConstructionTimestamp = chrono::high_resolution_clock::now();
 
+    // Descobrir quantos produtos teremos em cada linha de produção se divididos igualmente
+    int lineProductN[info.manufacturingLines];
+    const int lineTmp[2] = {
+         info.productN / info.manufacturingLines,
+         info.productN % info.manufacturingLines,
+    };
+    for (int i = 0; i < info.manufacturingLines; i++) {
+        bool overhead = false;
+
+        if (i < lineTmp[1]) {
+            overhead = true;
+        }
+
+        lineProductN[i] = lineTmp[0] + (overhead ? 1 : 0);
+        // cout << lineProductN[i] << ", ";
+    }
+    // cout << endl;
+
     // Liberando memória
     delete[] info.times;
     for (int i = 0; i < info.productN; i++) {
