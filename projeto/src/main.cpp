@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -6,6 +7,12 @@
 #include "./funcs/split.cpp"
 
 using namespace std;
+
+typedef struct Edge {
+    int source;
+    int destination;
+    int weight;
+} Edge;
 
 typedef struct InputInfo {
     int manufacturingLines;
@@ -54,6 +61,22 @@ int main(int argc, char* argv[]) {
     ifstream inputFile(argv[1]);
     InputInfo info = parseInput(&inputFile);
     inputFile.close();
+
+    vector<Edge> manufacturingLineGraph[info.productN + 1];
+    // Começamos sem nenhum produto
+    for (int i = 0; i < info.productN + 1; i++) {
+        // E para nenhum produto e para cada, podemos ir para todo outro produto
+        for (int j = 0; j < info.productN; j++) {
+            Edge edge;
+            edge.source = i;
+            edge.destination = j + 1;
+            // Caso os produtos sejam iguais, o peso é 0 (inválido)
+            edge.weight = ((i - 1) == j) ? 0 : info.times[j] + ((i == 0) ? 0 : info.switchTimes[i - 1][j]);
+            manufacturingLineGraph[i].push_back(edge);
+            // cout << edge.source << "->" << edge.destination << "." << edge.weight << ", ";
+        }
+        // cout << endl;
+    }
 
     // Liberando memória
     delete[] info.times;
