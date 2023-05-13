@@ -1,3 +1,4 @@
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
@@ -58,9 +59,13 @@ InputInfo parseInput(ifstream* input) {
 }
 
 int main(int argc, char* argv[]) {
+    auto beginningTimestamp = chrono::high_resolution_clock::now();
+
     ifstream inputFile(argv[1]);
     InputInfo info = parseInput(&inputFile);
     inputFile.close();
+
+    auto fileReadTimestamp = chrono::high_resolution_clock::now();
 
     vector<Edge> manufacturingLineGraph[info.productN + 1];
     // Começamos sem nenhum produto
@@ -81,12 +86,31 @@ int main(int argc, char* argv[]) {
         // cout << endl;
     }
 
+    auto graphConstructionTimestamp = chrono::high_resolution_clock::now();
+
     // Liberando memória
     delete[] info.times;
     for (int i = 0; i < info.productN; i++) {
         delete[] info.switchTimes[i];
     }
     delete[] info.switchTimes;
+
+    auto executionTimestamp = chrono::high_resolution_clock::now();
+
+    // Calculando estatísticas
+    int fileReadTime = chrono::duration_cast<chrono::microseconds>(
+        fileReadTimestamp - beginningTimestamp
+    ).count();
+    int graphConstructionTime = chrono::duration_cast<chrono::microseconds>(
+        graphConstructionTimestamp - fileReadTimestamp
+    ).count();
+    int executionTime = chrono::duration_cast<chrono::microseconds>(
+        executionTimestamp - beginningTimestamp
+    ).count();
+
+    cout << "Tempo de leitura do arquivo: " << fileReadTime << "µs" << endl;
+    cout << "Tempo de construção do grafo: " << graphConstructionTime << "µs" << endl;
+    cout << "Tempo de execução do programa: " << executionTime << "µs" << endl;
 
     return 0;
 }
