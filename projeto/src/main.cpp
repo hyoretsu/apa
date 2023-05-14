@@ -5,15 +5,10 @@
 #include <iostream>
 #include <vector>
 
+#include "./data_structures/Graph.cpp"
 #include "./funcs/split.cpp"
 
 using namespace std;
-
-typedef struct Edge {
-    int source;
-    int destination;
-    int weight;
-} Edge;
 
 typedef struct InputInfo {
     int manufacturingLines;
@@ -67,24 +62,24 @@ int main(int argc, char* argv[]) {
 
     auto fileReadTimestamp = chrono::high_resolution_clock::now();
 
-    vector<Edge> manufacturingLineGraph[info.productN + 1];
+    Graph* graph = new Graph(info.productN + 1);
+
     // Começamos sem nenhum produto
     for (int i = 0; i < info.productN + 1; i++) {
         // E para nenhum produto e para cada, podemos ir para todo outro produto
         for (int j = 0; j < info.productN; j++) {
-            int selfWeight = ((i - 1) == j) ? 0 : info.times[j];
-            int cleaningWeight = ((i == 0) ? 0 : info.switchTimes[i - 1][j]);
+            // Não há repetição de produtos
+            if (i == j + 1) continue;
 
-            Edge edge;
-            edge.source = i;
-            edge.destination = j + 1;
-            // Caso os produtos sejam iguais, o peso é 0 (inválido)
-            edge.weight = selfWeight + cleaningWeight;
-            manufacturingLineGraph[i].push_back(edge);
-            // cout << edge.source << "->" << edge.destination << "." << selfWeight << "+" << cleaningWeight << ", ";
+            graph->addEdge(
+                i,
+                j,
+                info.times[j] + ((i == 0) ? 0 : info.switchTimes[i - 1][j])
+            );
         }
-        // cout << endl;
     }
+
+    // graph->printEdges();
 
     auto graphConstructionTimestamp = chrono::high_resolution_clock::now();
 
