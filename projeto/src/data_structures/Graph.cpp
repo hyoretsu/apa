@@ -1,20 +1,22 @@
 #include <iostream>
 #include <map>
 
+using Edge = std::map<int, float>;
+
 class Graph {
 private:
-    std::map<int, float>* edges;
+    Edge* edges;
     int verticesN;
 public:
     // Constructor
     explicit Graph(const int verticesN) {
-        this->edges = new std::map<int, float>[verticesN];
+        this->edges = new Edge[verticesN];
         this->verticesN = verticesN;
     }
 
     // Copy constructor
     Graph(const Graph& other) {
-        this->edges = new std::map<int, float>[other.verticesN];
+        this->edges = new Edge[other.verticesN];
         for (int i = 0; i < other.verticesN; i++) {
             this->edges[i] = other.edges[i];
         }
