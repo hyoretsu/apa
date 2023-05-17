@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <vector>
 
 using Edge = std::map<int, float>;
 
@@ -37,7 +38,27 @@ public:
         edges[source][destination] = weight;
     }
 
-    std::map<int, float>* getEdges(int vertex) {
+    Edge* filterEdges(std::vector<int> edges) {
+        Edge* filteredEdges = new Edge[this->verticesN];
+        int i = 0;
+        while (i < verticesN) {
+            for (int elem : edges) {
+                if (i == elem) {
+                    filteredEdges[i] = this->edges[i];
+                }
+            }
+
+            i += 1;
+        }
+
+        return filteredEdges;
+    }
+
+    int getVerticesCount() {
+        return verticesN;
+    }
+
+    Edge* getEdges(int vertex) {
         return &this->edges[vertex];
     }
 

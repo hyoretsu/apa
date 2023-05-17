@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include "./data_structures/Graph.cpp"
+#include "./algorithms/dijkstra.cpp"
 #include "./funcs/split.cpp"
 
 using namespace std;
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 
     auto fileReadTimestamp = chrono::high_resolution_clock::now();
 
-    Graph* graph = new Graph(info.productN + 1);
+    Graph graph = Graph(info.productN + 1);
 
     // Começamos sem nenhum produto
     for (int i = 0; i < info.productN + 1; i++) {
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
             // Não há repetição de produtos
             if (i == j + 1) continue;
 
-            graph->addEdge(
+            graph.addEdge(
                 i,
                 j,
                 info.times[j] + ((i == 0) ? 0 : info.switchTimes[i - 1][j])
@@ -101,6 +101,32 @@ int main(int argc, char* argv[]) {
     }
     // cout << endl;
 
+    vector<DijkstraReturn> firstRunResult;
+    for (int i = 0; i < info.manufacturingLines; i++) {
+        std::vector<int> filteredEdges(lineProductN[0]);
+
+        if (i != 0) {
+            for (int j = i - 1; j >= 0; j--) {
+                DijkstraReturn lastResult = firstRunResult[j];
+
+                std::copy(lastResult.sequence.begin(), lastResult.sequence.end(), filteredEdges.begin());
+            }
+        }
+
+        firstRunResult.push_back(dijkstraCopycat(&graph, 0, &filteredEdges, lineProductN[i] + 1));
+    }
+
+    for (DijkstraReturn result : firstRunResult) {
+        cout << "Sequência: ";
+        for (int elem : result.sequence) {
+            cout << elem << ", ";
+        }
+        cout << endl;
+        cout << "Custo: " << result.cost << endl;
+    }
+
+    auto greedyAlgorithmTimestamp = chrono::high_resolution_clock::now();
+
     // Liberando memória
     delete[] info.times;
     for (int i = 0; i < info.productN; i++) {
@@ -117,12 +143,16 @@ int main(int argc, char* argv[]) {
     int graphConstructionTime = chrono::duration_cast<chrono::microseconds>(
         graphConstructionTimestamp - fileReadTimestamp
     ).count();
+    int greedyAlgorithmTime = chrono::duration_cast<chrono::microseconds>(
+        greedyAlgorithmTimestamp - graphConstructionTimestamp
+    ).count();
     int executionTime = chrono::duration_cast<chrono::microseconds>(
         executionTimestamp - beginningTimestamp
     ).count();
 
     cout << "Tempo de leitura do arquivo: " << fileReadTime << "µs" << endl;
     cout << "Tempo de construção do grafo: " << graphConstructionTime << "µs" << endl;
+    cout << "Tempo de execução do algoritmo guloso: " << greedyAlgorithmTime << "µs" << endl;
     cout << "Tempo de execução do programa: " << executionTime << "µs" << endl;
 
     return 0;
