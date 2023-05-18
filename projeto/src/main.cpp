@@ -52,6 +52,7 @@ InputInfo parseInput(ifstream* input) {
             if (!regex_match(switchTime, regex("\\d+"))) continue;
 
             switchTimes[i][j] = stoi(switchTime);
+            // Filter unwanted whitespaces
             j += 1;
         }
     }
@@ -114,13 +115,13 @@ int main(int argc, char* argv[]) {
 
     vector<DijkstraReturn> firstRunResult;
     for (int i = 0; i < info.manufacturingLines; i++) {
-        std::vector<int> filteredEdges(lineProductN[0]);
+        std::vector<int> filteredEdges = std::vector<int>();
 
         if (i != 0) {
             for (int j = i - 1; j >= 0; j--) {
                 DijkstraReturn lastResult = firstRunResult[j];
 
-                std::copy(lastResult.sequence.begin(), lastResult.sequence.end(), filteredEdges.begin());
+                filteredEdges.insert(filteredEdges.end(), lastResult.sequence.begin(), lastResult.sequence.end());
             }
         }
 
