@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <vector>
 
 #include "./algorithms/dijkstra.cpp"
@@ -30,18 +31,28 @@ InputInfo parseInput(ifstream* input) {
 
     int* times = new int[productN];
     vector<string> timesTmp = split(lines[3], " ");
-    for (int i = 0; i < productN;i++) {
-        times[i] = stoi(timesTmp[i]);
+    int i = 0;
+    for (string time : timesTmp) {
+        // Filter unwanted whitespaces
+        if (!regex_match(time, regex("\\d+"))) continue;
+
+        times[i] = stoi(time);
+        i += 1;
     }
 
     int** switchTimes = new int* [productN];
-    for (int i = 0; i < productN; i++) {
+    for (i = 0; i < productN; i++) {
         vector<string> switchTmp = split(lines[5 + i], " ");
         // Alocando memória a cada array de switchTimes
         switchTimes[i] = new int[productN];
 
-        for (int j = 0; j < productN; j++) {
-            switchTimes[i][j] = stoi(switchTmp[j]);
+        int j = 0;
+        for (string switchTime : switchTmp) {
+            // Filter unwanted whitespaces
+            if (!regex_match(switchTime, regex("\\d+"))) continue;
+
+            switchTimes[i][j] = stoi(switchTime);
+            j += 1;
         }
     }
 
