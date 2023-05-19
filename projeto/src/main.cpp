@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
+#include <string>
+#include <tuple>
 #include <vector>
 
 #include "./algorithms/dijkstra.cpp"
@@ -17,6 +19,49 @@ typedef struct InputInfo {
     int* times;
     int** switchTimes;
 } InputInfo;
+
+class TimeTracker {
+private:
+    vector<tuple<string, chrono::system_clock::time_point>> times;
+public:
+    TimeTracker() {
+        this->times = vector<tuple<string, chrono::system_clock::time_point>>();
+
+        auto beginningTimestamp = chrono::system_clock::now();
+        this->times.push_back(make_tuple("beginning", beginningTimestamp));
+    }
+
+    void lap(const char* key) {
+        auto timestamp = chrono::system_clock::now();
+
+        this->times.push_back(make_tuple(key, timestamp));
+    }
+
+    void print() {
+        auto executionTimestamp = chrono::system_clock::now();
+
+        int loopN = 0;
+        for (auto timeInfo : this->times) {
+            if (loopN == 0) {
+                loopN += 1;
+                continue;
+            }
+
+            int time = chrono::duration_cast<chrono::microseconds>(
+                get<1>(timeInfo) - get<1>(this->times[loopN - 1])
+            ).count();
+
+            cout << "Tempo de " << get<0>(timeInfo) << ": " << time << "µs" << endl;
+            loopN += 1;
+        }
+
+        int time = chrono::duration_cast<chrono::microseconds>(
+            executionTimestamp - get<1>(this->times[0])
+        ).count();
+
+        cout << "Tempo de execução do programa: " << time << "µs" << endl;
+    }
+};
 
 InputInfo parseInput(ifstream* input) {
     string line;
@@ -66,13 +111,13 @@ InputInfo parseInput(ifstream* input) {
 }
 
 int main(int argc, char* argv[]) {
-    auto beginningTimestamp = chrono::high_resolution_clock::now();
+    TimeTracker timeTracker = TimeTracker();
 
     ifstream inputFile(argv[1]);
     InputInfo info = parseInput(&inputFile);
     inputFile.close();
 
-    auto fileReadTimestamp = chrono::high_resolution_clock::now();
+    timeTracker.lap("leitura do arquivo");
 
     Graph graph = Graph(info.productN + 1);
 
@@ -93,7 +138,7 @@ int main(int argc, char* argv[]) {
 
     // graph->printEdges();
 
-    auto graphConstructionTimestamp = chrono::high_resolution_clock::now();
+    timeTracker.lap("construção do grafo");
 
     // Descobrir quantos produtos teremos em cada linha de produção se divididos igualmente
     int lineProductN[info.manufacturingLines];
@@ -137,7 +182,7 @@ int main(int argc, char* argv[]) {
         cout << "Custo: " << result.cost << endl;
     }
 
-    auto greedyAlgorithmTimestamp = chrono::high_resolution_clock::now();
+    timeTracker.lap("execução do algoritmo guloso");
 
     // Liberando memória
     delete[] info.times;
@@ -146,26 +191,7 @@ int main(int argc, char* argv[]) {
     }
     delete[] info.switchTimes;
 
-    auto executionTimestamp = chrono::high_resolution_clock::now();
-
-    // Calculando estatísticas
-    int fileReadTime = chrono::duration_cast<chrono::microseconds>(
-        fileReadTimestamp - beginningTimestamp
-    ).count();
-    int graphConstructionTime = chrono::duration_cast<chrono::microseconds>(
-        graphConstructionTimestamp - fileReadTimestamp
-    ).count();
-    int greedyAlgorithmTime = chrono::duration_cast<chrono::microseconds>(
-        greedyAlgorithmTimestamp - graphConstructionTimestamp
-    ).count();
-    int executionTime = chrono::duration_cast<chrono::microseconds>(
-        executionTimestamp - beginningTimestamp
-    ).count();
-
-    cout << "Tempo de leitura do arquivo: " << fileReadTime << "µs" << endl;
-    cout << "Tempo de construção do grafo: " << graphConstructionTime << "µs" << endl;
-    cout << "Tempo de execução do algoritmo guloso: " << greedyAlgorithmTime << "µs" << endl;
-    cout << "Tempo de execução do programa: " << executionTime << "µs" << endl;
+    timeTracker.print();
 
     return 0;
 }
