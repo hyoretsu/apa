@@ -11,19 +11,17 @@ private:
     std::string type;
 public:
     // Constructor
-    explicit Heap(const std::string& type) {
+    explicit Heap(const std::string& type) : type(type) {
         if (type != "min" && type != "max") {
             throw std::invalid_argument("There are only min and max heaps");
         }
-
-        this->type = type;
     }
 
     T& operator[](int index) {
         return this->arr[index];
     }
 
-    auto begin() {
+    std::vector<T>::iterator begin() {
         return this->arr.begin();
     }
 

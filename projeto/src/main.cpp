@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <locale>
 #include <regex>
 #include <string>
 #include <tuple>
@@ -111,6 +112,7 @@ InputInfo parseInput(ifstream* input) {
 }
 
 int main(int argc, char* argv[]) {
+    locale::global(locale{});
     TimeTracker timeTracker = TimeTracker();
 
     ifstream inputFile(argv[1]);

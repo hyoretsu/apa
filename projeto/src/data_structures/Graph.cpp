@@ -10,19 +10,13 @@ private:
     int verticesN;
 public:
     // Constructor
-    explicit Graph(const int verticesN) {
-        this->edges = new Edge[verticesN];
-        this->verticesN = verticesN;
-    }
+    explicit Graph(const int verticesN) : edges(new Edge[verticesN]), verticesN(verticesN) {}
 
     // Copy constructor
-    Graph(const Graph& other) {
-        this->edges = new Edge[other.verticesN];
+    Graph(const Graph& other) : edges(new Edge[other.verticesN]), verticesN(other.verticesN) {
         for (int i = 0; i < other.verticesN; i++) {
             this->edges[i] = other.edges[i];
         }
-
-        this->verticesN = other.verticesN;
     };
 
     // Copy assignment

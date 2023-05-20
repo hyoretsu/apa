@@ -11,10 +11,7 @@ public:
     int vertex;
 
     VertexCost() {}
-    VertexCost(int vertex, float cost) {
-        this->cost = cost;
-        this->vertex = vertex;
-    }
+    VertexCost(int vertex, float cost) : cost(cost), vertex(vertex) {}
 
     friend bool operator==(const VertexCost& a, const VertexCost& b) {
         return a.cost == b.cost && a.vertex == b.vertex;
