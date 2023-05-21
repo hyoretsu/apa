@@ -9,6 +9,10 @@
 #include <tuple>
 #include <vector>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "./algorithms/dijkstra.cpp"
 #include "./funcs/split.cpp"
 
@@ -112,7 +116,11 @@ InputInfo parseInput(ifstream* input) {
 }
 
 int main(int argc, char* argv[]) {
-    locale::global(locale{});
+    #ifdef __WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+    #endif
+
     TimeTracker timeTracker = TimeTracker();
 
     ifstream inputFile(argv[1]);
