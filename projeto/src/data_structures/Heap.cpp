@@ -21,7 +21,7 @@ public:
         return this->arr[index];
     }
 
-    std::vector<T>::iterator begin() {
+    typename std::vector<T>::iterator begin() {
         return this->arr.begin();
     }
 
@@ -29,7 +29,7 @@ public:
         return this->arr.empty();
     }
 
-    auto end() {
+    typename std::vector<T>::iterator end() {
         return this->arr.end();
     }
 
