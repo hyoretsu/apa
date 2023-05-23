@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "../utils/swap.cpp"
+
 template<typename T = int>
 class Heap {
 private:
@@ -49,9 +51,7 @@ public:
 
         // Gambiarra - .cost
         while (this->type == "min" ? this->arr[fatherIndex].cost > value.cost : this->arr[fatherIndex].cost < value.cost) {
-            T temp = this->arr[fatherIndex];
-            this->arr[fatherIndex] = this->arr[index];
-            this->arr[index] = temp;
+            utils::swap<T>(&this->arr, index, fatherIndex);
 
             index = fatherIndex;
             fatherIndex = floor((index - 1) / 2);
@@ -82,9 +82,7 @@ public:
             biggestChild = std::max(this->arr[leftChildIndex], this->arr[rightChildIndex]);
             int biggestChildIndex = (biggestChild == this->arr[leftChildIndex]) ? leftChildIndex : rightChildIndex;
 
-            T temp = this->arr[index];
-            this->arr[index] = this->arr[biggestChildIndex];
-            this->arr[biggestChildIndex] = temp;
+            utils::swap<T>(&this->arr, index, biggestChildIndex);
 
             index = biggestChildIndex;
         } while (this->type == "min" ? this->arr[index] > biggestChild : this->arr[index] < biggestChild);
