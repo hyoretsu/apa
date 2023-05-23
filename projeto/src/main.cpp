@@ -116,10 +116,10 @@ InputInfo parseInput(ifstream* input) {
 }
 
 int main(int argc, char* argv[]) {
-    #ifdef __WIN32
+#ifdef __WIN32
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
-    #endif
+#endif
 
     TimeTracker timeTracker = TimeTracker();
 
@@ -168,6 +168,8 @@ int main(int argc, char* argv[]) {
     }
     // cout << endl;
 
+    DijkstraCopycat dijkstraCopycat = DijkstraCopycat(&graph);
+
     vector<DijkstraReturn> firstRunResult;
     for (int i = 0; i < info.manufacturingLines; i++) {
         std::vector<int> filteredEdges = std::vector<int>();
@@ -180,7 +182,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        firstRunResult.push_back(dijkstraCopycat(&graph, 0, &filteredEdges, lineProductN[i] + 1));
+        firstRunResult.push_back(dijkstraCopycat.findShortestPath(0, filteredEdges, lineProductN[i] + 1));
     }
 
     for (DijkstraReturn result : firstRunResult) {

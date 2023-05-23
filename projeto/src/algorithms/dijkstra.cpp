@@ -61,81 +61,100 @@ typedef struct {
     float cost;
 } DijkstraReturn;
 
-DijkstraReturn dijkstraCopycat(Graph* graph, int initialVertex, std::vector<int>* filteredEdges, int maxSteps = 0) {
-    Heap<VertexCost> priorityQueue = Heap<VertexCost>("min");
+class DijkstraCopycat {
+private:
+    Graph* graph;
+    Heap<VertexCost> priorityQueue;
 
-    for (int i = 0; i < graph->getVerticesCount(); i++) {
-        int cost = std::numeric_limits<int>::max();
-        if (i == initialVertex) cost = 0;
+    void initPriorityQueue(int initialVertex) {
+        for (int i = 0; i < this->graph->getVerticesCount(); i++) {
+            int cost = std::numeric_limits<int>::max();
+            if (i == initialVertex) cost = 0;
 
-        priorityQueue.insert(VertexCost(i, cost));
+            priorityQueue.insert(VertexCost(i, cost));
+        }
     }
 
-    // std::cout << "fila de prioridade: ";
-    // priorityQueue.print();
+public:
+    explicit DijkstraCopycat(Graph* graph) : graph(graph), priorityQueue(Heap<VertexCost>("min")) {
+    }
 
-    std::vector<int> sequence;
-    float totalCost = 0;
-    int steps = 0;
+    DijkstraReturn findShortestPath(
+        int initialVertex,
+        const std::vector<int>& filteredEdges = std::vector<int>(),
+        int maxSteps = 0
+    ) {
+        this->initPriorityQueue(initialVertex);
 
-    while ((maxSteps && steps < maxSteps) || (!maxSteps && !priorityQueue.empty())) {
-        int currentVertex = priorityQueue.front().vertex;
-        float currentCost = priorityQueue.front().cost;
-        priorityQueue.pop();
+        // std::cout << "fila de prioridade: ";
+        // this->priorityQueue.print();
 
-        sequence.push_back(currentVertex);
-        // totalCost += currentCost;
-        // REMOVE
-        totalCost = currentCost;
+        std::vector<int> sequence;
+        float totalCost = 0;
+        int steps = 0;
 
-        // std::cout << currentVertex << "-" << currentCost << "=" << totalCost << std::endl;
-
-        Edge* edges = graph->getEdges(currentVertex);
-
-        int pqSize = priorityQueue.size();
-        std::vector<VertexCost> newPqElems;
-
-        for (int i = 0; i < pqSize; i++) {
-            int vertex = priorityQueue.front().vertex;
-            float cost = priorityQueue.front().cost;
+        while ((maxSteps && steps < maxSteps) || (!maxSteps && !priorityQueue.empty())) {
+            int currentVertex = priorityQueue.front().vertex;
+            float currentCost = priorityQueue.front().cost;
             priorityQueue.pop();
 
-            // If current vertex is in the array
-            if (std::find(filteredEdges->begin(), filteredEdges->end(), vertex) != filteredEdges->end()) {
-                continue;
+            sequence.push_back(currentVertex);
+            // totalCost += currentCost;
+            // REMOVE
+            totalCost = currentCost;
+
+            // std::cout << currentVertex << "-" << currentCost << "=" << totalCost << std::endl;
+
+            Edge* edges = graph->getEdges(currentVertex);
+
+            int pqSize = priorityQueue.size();
+            std::vector<VertexCost> newPqElems;
+
+            for (int i = 0; i < pqSize; i++) {
+                int vertex = priorityQueue.front().vertex;
+                float cost = priorityQueue.front().cost;
+                priorityQueue.pop();
+
+                // If current vertex is in the array
+                if (
+                    !filteredEdges.empty() &&
+                    (std::find(filteredEdges.begin(), filteredEdges.end(), vertex) != filteredEdges.end())
+                    ) {
+                    continue;
+                }
+
+                // REMOVE -1
+                float edgeWeight = (*edges)[vertex - 1];
+                if (edgeWeight) {
+                    float newCost = currentCost + edgeWeight;
+
+                    // REMOVE
+                    // if (newCost < cost) {
+                    newPqElems.push_back(VertexCost(vertex, newCost));
+                    continue;
+                    // }
+                }
+
+                newPqElems.push_back(VertexCost(vertex, cost));
             }
 
-            // REMOVE -1
-            float edgeWeight = (*edges)[vertex - 1];
-            if (edgeWeight) {
-                float newCost = currentCost + edgeWeight;
-
-                // REMOVE
-                // if (newCost < cost) {
-                newPqElems.push_back(VertexCost(vertex, newCost));
-                continue;
-                // }
+            for (VertexCost elem : newPqElems) {
+                // std::cout << elem << std::endl;
+                priorityQueue.insert(elem);
             }
 
-            newPqElems.push_back(VertexCost(vertex, cost));
+            steps += 1;
+
+            // std::cout << "nova fila: ";
+            // priorityQueue.print();
         }
 
-        for (VertexCost elem : newPqElems) {
-            // std::cout << elem << std::endl;
-            priorityQueue.insert(elem);
-        }
+        // REMOVE
+        // Clean resulting sequence
+        sequence.erase(sequence.begin());
 
-        steps += 1;
+        DijkstraReturn result = { sequence, totalCost };
 
-        // std::cout << "nova fila: ";
-        // priorityQueue.print();
+        return result;
     }
-
-    // REMOVE
-    // Clean resulting sequence
-    sequence.erase(sequence.begin());
-
-    DijkstraReturn result = { sequence, totalCost };
-
-    return result;
-}
+};
