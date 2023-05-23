@@ -105,7 +105,7 @@ public:
 
             // std::cout << currentVertex << "-" << currentCost << "=" << totalCost << std::endl;
 
-            Edge* edges = graph->getEdges(currentVertex);
+            Edge edges = graph->getEdges(currentVertex);
 
             int pqSize = priorityQueue.size();
             std::vector<VertexCost> newPqElems;
@@ -124,7 +124,7 @@ public:
                 }
 
                 // REMOVE -1
-                float edgeWeight = (*edges)[vertex - 1];
+                float edgeWeight = edges[vertex - 1];
                 if (edgeWeight) {
                     float newCost = currentCost + edgeWeight;
 
