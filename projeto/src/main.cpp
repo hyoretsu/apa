@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // graph->printEdges();
+    // graph.printEdges();
 
     timeTracker.lap("construção do grafo");
 

@@ -55,7 +55,7 @@ public:
 
         // Gambiarra - .cost
         while (this->type == "min" ? this->arr[fatherIndex].cost > value.cost : this->arr[fatherIndex].cost < value.cost) {
-            utils::swap<T>(&this->arr, index, fatherIndex);
+            swap<T>(this->arr, index, fatherIndex);
 
             index = fatherIndex;
             fatherIndex = floor((index - 1) / 2);
@@ -86,7 +86,7 @@ public:
             biggestChild = std::max(this->arr[leftChildIndex], this->arr[rightChildIndex]);
             int biggestChildIndex = (biggestChild == this->arr[leftChildIndex]) ? leftChildIndex : rightChildIndex;
 
-            utils::swap<T>(&this->arr, index, biggestChildIndex);
+            swap<T>(this->arr, index, biggestChildIndex);
 
             index = biggestChildIndex;
         } while (this->type == "min" ? this->arr[index] > biggestChild : this->arr[index] < biggestChild);
