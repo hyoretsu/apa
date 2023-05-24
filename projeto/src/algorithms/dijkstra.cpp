@@ -67,11 +67,13 @@ private:
     Heap<VertexCost> priorityQueue;
 
     void initPriorityQueue(int initialVertex) {
+        this->priorityQueue.erase();
+
         for (int i = 0; i < this->graph->getVerticesCount(); i++) {
             int cost = std::numeric_limits<int>::max();
             if (i == initialVertex) cost = 0;
 
-            priorityQueue.insert(VertexCost(i, cost));
+            this->priorityQueue.insert(VertexCost(i, cost));
         }
     }
 
@@ -139,9 +141,10 @@ public:
             }
 
             for (VertexCost elem : newPqElems) {
-                // std::cout << elem << std::endl;
+                // std::cout << elem << ", ";
                 priorityQueue.insert(elem);
             }
+            // std::cout << std::endl;
 
             steps += 1;
 

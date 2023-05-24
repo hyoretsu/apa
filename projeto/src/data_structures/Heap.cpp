@@ -35,6 +35,10 @@ public:
         return this->arr.end();
     }
 
+    void erase() {
+        this->arr.clear();
+    }
+
     std::vector<T>* expose() {
         return &this->arr;
     }
