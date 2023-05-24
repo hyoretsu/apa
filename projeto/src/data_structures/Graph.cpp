@@ -27,7 +27,7 @@ public:
         edges[source][destination] = weight;
     }
 
-    float calculateCost(std::vector<int>* vertices, bool initialVertex) {
+    float calculateCost(std::vector<int>* vertices, bool initialVertex = false) {
         float totalCost = 0;
 
         int verticesCount = vertices->size();
