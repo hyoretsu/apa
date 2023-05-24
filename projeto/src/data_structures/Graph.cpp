@@ -27,18 +27,16 @@ public:
         edges[source][destination] = weight;
     }
 
-    float calculateCost(std::vector<int>* vertices, bool initialVertex = false) {
+    float calculateCost(const std::vector<int>& vertices, bool initialVertex = false) {
         float totalCost = 0;
 
-        int verticesCount = vertices->size();
-        for (int i = 0; i < verticesCount - 1; i++) {
+        int verticesCount = vertices.size();
+        for (int i = 0; i < verticesCount; i++) {
             if (i == 0 && initialVertex) {
-                totalCost += this->edges[0][(*vertices)[i]];
+                totalCost += this->edges[0][vertices[i] - 1];
             }
 
-            totalCost += this->edges[(*vertices)[i]][(*vertices)[i + 1]];
-
-            i += 1;
+            totalCost += this->edges[vertices[i]][vertices[i + 1] - 1];
         }
 
         return totalCost;
@@ -49,7 +47,6 @@ public:
         for (int i : edges) {
             filteredEdges.push_back(this->edges[i]);
         }
-
 
         return filteredEdges;
     }
