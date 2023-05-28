@@ -13,8 +13,9 @@
 #include <windows.h>
 #endif
 
-#include "./algorithms/dijkstra.cpp"
+// #include "./algorithms/dijkstra.cpp"
 #include "./funcs/split.cpp"
+#include "./algorithms/VariableNeighborhoodDescent.cpp"
 
 using namespace std;
 
@@ -184,6 +185,8 @@ int main(int argc, char* argv[]) {
 
         firstRunResult.push_back(dijkstraCopycat.findShortestPath(0, filteredEdges, lineProductN[i] + 1));
     }
+    
+    timeTracker.lap("execução do algoritmo guloso");
 
     cout << "+-------Dijkstra-------+" << endl;
 
@@ -200,75 +203,37 @@ int main(int argc, char* argv[]) {
 
     cout << endl;
 
-    vector<DijkstraReturn> swapResult = firstRunResult;
-
-    swap<int>(swapResult[0].sequence, 1, 2);
-    swap<int>(swapResult[1].sequence, 1, 2);
-
-    swapResult[0].cost = graph.calculateCost(swapResult[0].sequence, true);
-    swapResult[1].cost = graph.calculateCost(swapResult[1].sequence, true);
-
-    cout << "+--------Swap--------+" << endl;
-
-    for (DijkstraReturn swapI: swapResult) {
-        cout << "Sequêcia Swap: ";
-        for (int elem: swapI.sequence) {
-            cout << elem << " > ";
-        }
-        cout << endl;
-        cout << "Custo Swap: " << swapI.cost << endl;
-    }
-
-    cout << "+---------------------+" << endl;
-
-    cout << endl;
+    vector<vector<DijkstraReturn>> vndResult;
     
-    vector<DijkstraReturn> scrambleResult = firstRunResult;
+    int i = 0;
 
-    scramble<int>(scrambleResult[0].sequence);
-    scramble<int>(scrambleResult[1].sequence);
+    for (DijkstraReturn result : firstRunResult) {
+        VariableNeighborhoodDescent<int> vnd = VariableNeighborhoodDescent<int>(graph, result.sequence);
 
-    scrambleResult[0].cost = graph.calculateCost(scrambleResult[0].sequence, true);
-    scrambleResult[1].cost = graph.calculateCost(scrambleResult[1].sequence, true);
-
-    cout << "+--------Scramble--------+" << endl;
-
-    for (DijkstraReturn scrambleI: scrambleResult) {
-        cout << "Sequêcia Scramble: ";
-        for (int elem: scrambleI.sequence) {
-            cout << elem << " > ";
+        vndResult.resize(firstRunResult.size());
+        
+        for (int j = 0; j < 10; j++) {
+            vndResult[i].push_back(vnd.execute(result.sequence));
         }
-        cout << endl;
-        cout << "Custo Scramble: " << scrambleI.cost << endl;
+        
+        i++;
     }
 
-    cout << "+---------------------+" << endl;
-
-    cout << endl;
-
-    vector<DijkstraReturn> reverseResult = firstRunResult;
-
-    reverseSubsequence<int>(reverseResult[0].sequence, 0, reverseResult[0].sequence.size() - 1);
-    reverseSubsequence<int>(reverseResult[1].sequence, 0, reverseResult[1].sequence.size() - 1);
-
-    reverseResult[0].cost = graph.calculateCost(reverseResult[0].sequence, true);
-    reverseResult[1].cost = graph.calculateCost(reverseResult[1].sequence, true);
-
-    cout << "+--------ReverseSub--------+" << endl;
-
-    for (DijkstraReturn reverseI: reverseResult) {
-        cout << "Sequêcia Reverse Sub: ";
-        for (int elem: reverseI.sequence) {
-            cout << elem << " > ";
+    
+    for (vector<DijkstraReturn> resultArr : vndResult) {
+        for (int i; i < resultArr.size(); i++) {
+            cout << "--------------" << endl;
+            cout << "Sequência: ";
+            for (int elem : result.sequence) {
+                cout << elem << " > ";
+            }
+            cout << endl;
+            cout << "Custo: " << result.cost << endl;
+            cout << "--------------" << endl;
         }
-        cout << endl;
-        cout << "Custo Reverse Sub: " << reverseI.cost << endl;
     }
 
-    cout << "+---------------------+" << endl;
-
-    cout << endl;
-
+        
     // Liberando memória
     delete[] info.times;
     for (int i = 0; i < info.productN; i++) {

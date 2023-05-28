@@ -5,9 +5,6 @@
 #include <vector>
 
 #include "../utils/swap.cpp"
-#include "../utils/scramble.cpp"
-#include "../utils/reversesub.cpp"
-#include "../utils/NeighborhoodMove.cpp"
 
 template<typename T = int>
 class Heap {
