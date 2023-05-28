@@ -62,64 +62,51 @@ public:
     VariableNeighborhoodDescent(Graph &graph, vector<vector<int>> initialSequence) : graph(graph), bestSequence(initialSequence) {}
 
     DijkstraReturn execute(std::vector<vector<T>>& arr, int manufacturingLine) {
-        int i = 0;
-        int moviments = 0;
-        int maxMoviments = 3;
-
+        int k = 0;
+        int kMax = 4;
         float currentObjective;
-        float bestValues;
-
-        vector<float> currentCost;
 
         for (int i = 0; i < manufacturingLine; i++) {
-            bestSequence = arr;
-            currentObjective = graph.calculateCost(bestSequence[i], true);
-            currentCost.push_back(currentObjective);
+            bestSequence = arr[i];
+            currentObjective = graph.calculateCost(arr[i], true);
         }
+        
+        float bestObjective = currentObjective;
 
-        bestValues = currentCost[i];
-
+        // Gerando um motor de números aleatórios
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis(0, arr[0].size() - 1);
+        std::uniform_int_distribution<> dis(0, arr.size() - 1);
 
-        while (moviments < maxMoviments) {
-            std::vector<T> newSolution = bestSequence[i];
-            
-            if (moviments == 0) {
+        while (k < kMax) {
+            std::vector<vector<T>> newSolution = bestSequence;
+            if (k == 0) {
+                // Gerando dois índices aleatórios para trocar
                 int i = dis(gen);
                 int j = dis(gen);
-
                 applySwap(newSolution, i, j);
-            } else if (moviments == 1) {
+            } else if (k == 1) {
+                applyReverseSubsequence(newSolution);
+            } else if (k == 2) {
+                applyScramble(newSolution);
+            } else if (k = 3) {
                 int i = dis(gen);
                 int j = dis(gen);
-
-                applyScramble(newSolution);
-            } else if (moviments == 2) {
-                applyReverseSubsequence(newSolution);
+                applySwapL(newSolution, manufacturingLine, i, j);
             }
 
-            int i = dis(gen);
-            int j = dis(gen);
-            applySwapL(bestSequence, manufacturingLine, i, j);
+            double newObjective = graph.calculateCost(newSolution, true);
 
-            float finalSolution = graph.calculateCost(newSolution, true);
-
-            if (finalSolution < currentCost[i]) {
-                bestSequence[i] = finalSolution;
-                currentCost[i] = newSolution[i];
-                moviments = 0;
+            if (newObjective < bestObjective) {
+                bestSequence = newSolution;
+                bestObjective = newObjective;
+                k = 0;
             } else {
-                moviments++;
+                k++;
             }
-
-            i++;
         }
-        
 
-        DijkstraReturn result = {bestSequence[i], static_cast<float>(currentCost[i])};
-        
+        DijkstraReturn result = {bestSequence, static_cast<float>(bestObjective)};
         return result;
     }
 

@@ -207,39 +207,35 @@ int main(int argc, char* argv[]) {
     
     int i = 0;
 
-    vector<vector<int>> allLinesResult;
-
-    for (int i = 0; i < info.manufacturingLines; i++) {
-            allLinesResult[i] = firstRunResult[i].sequence;
-    }
-            
     for (DijkstraReturn result : firstRunResult) {
-            VariableNeighborhoodDescent<int> vnd = VariableNeighborhoodDescent<int>(graph, allLinesResult);
+        VariableNeighborhoodDescent<int> vnd = VariableNeighborhoodDescent<int>(graph, result.sequence);
 
-            vndResult.resize(firstRunResult.size());
-
-            for (int j = 0; j < 10; j++) {
-                vndResult[i].push_back(vnd.execute(allLinesResult, info.manufacturingLines));
-            }
-            
-            i++;
-        }
-
+        vndResult.resize(firstRunResult.size());
         
-    for (vector<DijkstraReturn> resultArr : vndResult) {
-        cout << "teste" << endl;
-        for (int i = 0; i < resultArr.size(); i++) {
-                cout << "--------------" << endl;
-                cout << "Sequência: ";
-            for (int elem : resultArr[i].sequence) {
-                    cout << elem << " > ";
-                }
-                cout << endl;
-                cout << "Custo: " << resultArr[i].cost << endl;
-                cout << "--------------" << endl;
-            }
+        for (int j = 0; j < 10; j++) {
+            vndResult[i].push_back(vnd.execute(result.sequence));
         }
+        
+        i++;
+    }
 
+    
+    cout << "+-------VariableNeighborhoodDescent-------+" << endl;
+
+    for (vector<DijkstraReturn> resultArr : vndResult) {
+        for (int i = 0; i < resultArr.size(); i++) {
+            cout << "--------------" << endl;
+            cout << "Sequência: ";
+            for (int elem : resultArr[i].sequence) {
+                cout << elem << " > ";
+            }
+            cout << endl;
+            cout << "Custo: " << resultArr[i].cost << endl;
+            cout << "--------------" << endl;
+        }
+    }
+
+    cout << "+---------------------+" << endl;
 
         
     // Liberando memória
