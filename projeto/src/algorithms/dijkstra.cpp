@@ -2,8 +2,8 @@
 #include <limits>
 #include <vector>
 
-#include "../data_structures/Graph.cpp"
-#include "../data_structures/Heap.cpp"
+#include "../data_structures/Graph.hpp"
+#include "../data_structures/Heap.hpp"
 
 class VertexCost {
 public:
