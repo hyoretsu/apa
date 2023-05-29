@@ -87,7 +87,7 @@ public:
             bestCost[i] = initialResult[i].cost;
         }
 
-        int currentLineMovement = 0, timeout = 20, unsuccessfulTries = 0;
+        int currentLineMovement = 0, timeout = solutionSize * 10, unsuccessfulTries = 0;
         while (unsuccessfulTries < timeout) {
             std::vector<std::vector<T>> newSolution = bestSolution;
             std::vector<float> newCost = bestCost;
