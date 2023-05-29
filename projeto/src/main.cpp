@@ -69,11 +69,11 @@ public:
     }
 };
 
-InputInfo parseInput(ifstream* input) {
+InputInfo parseInput(ifstream& input) {
     string line;
     vector<string> lines;
 
-    while (getline(*input, line)) {
+    while (getline(input, line)) {
         lines.push_back(line);
     }
 
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
     TimeTracker timeTracker = TimeTracker();
 
     ifstream inputFile(argv[1]);
-    InputInfo info = parseInput(&inputFile);
+    InputInfo info = parseInput(inputFile);
     inputFile.close();
 
     timeTracker.lap("leitura do arquivo");
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
     }
     // cout << endl;
 
-    DijkstraCopycat dijkstraCopycat = DijkstraCopycat(&graph);
+    DijkstraCopycat dijkstraCopycat = DijkstraCopycat(graph);
 
     vector<DijkstraReturn> firstRunResult;
     for (int i = 0; i < info.manufacturingLines; i++) {

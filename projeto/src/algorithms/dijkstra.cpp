@@ -63,13 +63,13 @@ typedef struct {
 
 class DijkstraCopycat {
 private:
-    Graph* graph;
+    Graph& graph;
     Heap<VertexCost> priorityQueue;
 
     void initPriorityQueue(int initialVertex) {
         this->priorityQueue.erase();
 
-        for (int i = 0; i < this->graph->getVerticesCount(); i++) {
+        for (int i = 0; i < this->graph.getVerticesCount(); i++) {
             int cost = std::numeric_limits<int>::max();
             if (i == initialVertex) cost = 0;
 
@@ -78,7 +78,7 @@ private:
     }
 
 public:
-    explicit DijkstraCopycat(Graph* graph) : graph(graph), priorityQueue(Heap<VertexCost>("min")) {
+    explicit DijkstraCopycat(Graph& graph) : graph(graph), priorityQueue(Heap<VertexCost>("min")) {
     }
 
     DijkstraReturn findShortestPath(
@@ -95,10 +95,10 @@ public:
         float totalCost = 0;
         int steps = 0;
 
-        while ((maxSteps && steps < maxSteps) || (!maxSteps && !priorityQueue.empty())) {
-            int currentVertex = priorityQueue.front().vertex;
-            float currentCost = priorityQueue.front().cost;
-            priorityQueue.pop();
+        while ((maxSteps && steps < maxSteps) || (!maxSteps && !this->priorityQueue.empty())) {
+            int currentVertex = this->priorityQueue.front().vertex;
+            float currentCost = this->priorityQueue.front().cost;
+            this->priorityQueue.pop();
 
             sequence.push_back(currentVertex);
             // totalCost += currentCost;
@@ -107,15 +107,15 @@ public:
 
             // std::cout << currentVertex << "-" << currentCost << "=" << totalCost << std::endl;
 
-            Edge edges = graph->getEdges(currentVertex);
+            Edge edges = this->graph.getEdges(currentVertex);
 
-            int pqSize = priorityQueue.size();
+            int pqSize = this->priorityQueue.size();
             std::vector<VertexCost> newPqElems;
 
             for (int i = 0; i < pqSize; i++) {
-                int vertex = priorityQueue.front().vertex;
-                float cost = priorityQueue.front().cost;
-                priorityQueue.pop();
+                int vertex = this->priorityQueue.front().vertex;
+                float cost = this->priorityQueue.front().cost;
+                this->priorityQueue.pop();
 
                 // If current vertex is in the array
                 if (
@@ -142,14 +142,14 @@ public:
 
             for (VertexCost elem : newPqElems) {
                 // std::cout << elem << ", ";
-                priorityQueue.insert(elem);
+                this->priorityQueue.insert(elem);
             }
             // std::cout << std::endl;
 
             steps += 1;
 
             // std::cout << "nova fila: ";
-            // priorityQueue.print();
+            // this->priorityQueue.print();
         }
 
         // REMOVE

@@ -17,7 +17,7 @@ public:
     bool empty();
     typename std::vector<T>::iterator end();
     void erase();
-    std::vector<T>* expose();
+    std::vector<T>& expose();
     T front();
     void insert(T value);
     void pop();
