@@ -13,7 +13,8 @@
 #include <windows.h>
 #endif
 
-#include "./algorithms/dijkstra.cpp"
+// #include "./algorithms/dijkstra.cpp"
+#include "./algorithms/VariableNeighborhoodDescent.cpp"
 #include "./funcs/split.cpp"
 
 using namespace std;
@@ -185,6 +186,15 @@ int main(int argc, char* argv[]) {
         firstRunResult.push_back(dijkstraCopycat.findShortestPath(0, filteredEdges, lineProductN[i] + 1));
     }
 
+    timeTracker.lap("execução do algoritmo guloso");
+
+    VariableNeighborhoodDescent<int> vnd = VariableNeighborhoodDescent<int>(graph);
+    vector<VNDReturn> vndResults = vnd.execute(firstRunResult);
+
+    timeTracker.lap("execução do VND");
+
+    cout << "----- Guloso -----" << endl;
+
     for (DijkstraReturn result : firstRunResult) {
         cout << "Sequência: ";
         for (int elem : result.sequence) {
@@ -194,7 +204,18 @@ int main(int argc, char* argv[]) {
         cout << "Custo: " << result.cost << endl;
     }
 
-    timeTracker.lap("execução do algoritmo guloso");
+    cout << "----- Busca local -----" << endl;
+
+    for (VNDReturn result : vndResults) {
+        if (result.sequence.size() == 0) continue; // Gambiarra de leve
+
+        cout << "Sequência: ";
+        for (int elem : result.sequence) {
+            cout << elem << ", ";
+        }
+        cout << endl;
+        cout << "Custo: " << result.cost << endl;
+    }
 
     // Liberando memória
     delete[] info.times;
