@@ -59,7 +59,7 @@ public:
 typedef struct {
     std::vector<int> sequence;
     float cost;
-} DijkstraReturn;
+} AlgorithmReturn;
 
 class DijkstraCopycat {
 private:
@@ -81,7 +81,7 @@ public:
     explicit DijkstraCopycat(Graph& graph) : graph(graph), priorityQueue(Heap<VertexCost>("min")) {
     }
 
-    DijkstraReturn findShortestPath(
+    AlgorithmReturn findShortestPath(
         int initialVertex,
         const std::vector<int>& filteredEdges = std::vector<int>(),
         int maxSteps = 0
@@ -156,7 +156,7 @@ public:
         // Clean resulting sequence
         sequence.erase(sequence.begin());
 
-        DijkstraReturn result = { sequence, totalCost };
+        AlgorithmReturn result = { sequence, totalCost };
 
         return result;
     }
