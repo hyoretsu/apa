@@ -214,8 +214,6 @@ int main(int argc, char* argv[]) {
     cout << "----- Busca local -----" << endl;
 
     for (VNDReturn result : vndResults) {
-        if (result.sequence.size() == 0) continue; // Gambiarra de leve
-
         cout << "Sequência: ";
         for (int elem : result.sequence) {
             cout << elem << ", ";

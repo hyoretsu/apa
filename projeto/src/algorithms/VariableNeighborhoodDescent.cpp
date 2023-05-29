@@ -159,7 +159,7 @@ public:
         std::vector<VNDReturn> result(solutionSize);
         for (int i = 0; i < solutionSize; i++) {
             VNDReturn solutionCost = { bestSolution[i], bestCost[i] };
-            result.push_back(solutionCost);
+            result[i] = solutionCost;
         };
 
         return result;
