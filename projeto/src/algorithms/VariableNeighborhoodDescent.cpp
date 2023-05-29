@@ -6,11 +6,6 @@
 #include "../utils/random.hpp"
 #include "../utils/swap.hpp"
 
-typedef struct {
-    std::vector<int> sequence;
-    float cost;
-} VNDReturn;
-
 template<typename T = int>
 class VariableNeighborhoodDescent {
 private:
@@ -54,30 +49,10 @@ private:
         return swappedIndexes;
     }
 
-    void reverseSubsequence(std::vector<T>& arr) {
-        int startIndex = 0;
-        int endIndex = arr.size() - 1;
-
-        while (startIndex < endIndex) {
-            utils::swap(arr, startIndex, endIndex);
-
-            startIndex += 1;
-            endIndex -= 1;
-        }
-    }
-
-    void scramble(std::vector<T>& arr) {
-        for (int i = 0; i < arr.size(); i++) {
-            int j = random(0, arr.size() - 1);
-
-            utils::swap(arr, i, j);
-        }
-    }
-
 public:
     explicit VariableNeighborhoodDescent(Graph& graph) : graph(graph) {}
 
-    std::vector<VNDReturn> execute(const std::vector<DijkstraReturn>& initialResult) {
+    std::vector<AlgorithmReturn> execute(const std::vector<AlgorithmReturn>& initialResult) {
         int solutionSize = initialResult.size();
 
         std::vector<std::vector<T>> bestSolution(solutionSize);
@@ -156,12 +131,36 @@ public:
             }
         }
 
-        std::vector<VNDReturn> result(solutionSize);
+        std::vector<AlgorithmReturn> result(solutionSize);
         for (int i = 0; i < solutionSize; i++) {
-            VNDReturn solutionCost = { bestSolution[i], bestCost[i] };
+            AlgorithmReturn solutionCost = { bestSolution[i], bestCost[i] };
             result[i] = solutionCost;
         };
 
         return result;
+    }
+
+    Graph& getGraph() {
+        return this->graph;
+    }
+
+    void reverseSubsequence(std::vector<T>& arr) {
+        int startIndex = 0;
+        int endIndex = arr.size() - 1;
+
+        while (startIndex < endIndex) {
+            utils::swap(arr, startIndex, endIndex);
+
+            startIndex += 1;
+            endIndex -= 1;
+        }
+    }
+
+    void scramble(std::vector<T>& arr) {
+        for (int i = 0; i < arr.size(); i++) {
+            int j = random(0, arr.size() - 1);
+
+            utils::swap(arr, i, j);
+        }
     }
 };

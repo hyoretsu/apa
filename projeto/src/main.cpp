@@ -14,7 +14,8 @@
 #endif
 
 // #include "./algorithms/dijkstra.cpp"
-#include "./algorithms/VariableNeighborhoodDescent.cpp"
+// #include "./algorithms/VariableNeighborhoodDescent.cpp"
+#include "./algorithms/IteratedLocalSearch.cpp"
 #include "./funcs/split.cpp"
 
 using namespace std;
@@ -178,13 +179,13 @@ int main(int argc, char* argv[]) {
 
     DijkstraCopycat dijkstraCopycat = DijkstraCopycat(graph);
 
-    vector<DijkstraReturn> firstRunResult;
+    vector<AlgorithmReturn> firstRunResult;
     for (int i = 0; i < info.manufacturingLines; i++) {
         std::vector<int> filteredEdges = std::vector<int>();
 
         if (i != 0) {
             for (int j = i - 1; j >= 0; j--) {
-                DijkstraReturn lastResult = firstRunResult[j];
+                AlgorithmReturn lastResult = firstRunResult[j];
 
                 filteredEdges.insert(filteredEdges.end(), lastResult.sequence.begin(), lastResult.sequence.end());
             }
@@ -196,13 +197,18 @@ int main(int argc, char* argv[]) {
     timeTracker.lap("execução do algoritmo guloso");
 
     VariableNeighborhoodDescent<int> vnd = VariableNeighborhoodDescent<int>(graph);
-    vector<VNDReturn> vndResults = vnd.execute(firstRunResult);
+    vector<AlgorithmReturn> vndResults = vnd.execute(firstRunResult);
 
     timeTracker.lap("execução do VND");
 
+    IteratedLocalSearch<int> ils = IteratedLocalSearch<int>(vnd);
+    vector<AlgorithmReturn> ilsResults = ils.execute(vndResults);
+
+    timeTracker.lap("execução do ILS");
+
     cout << "----- Algoritmo guloso -----" << endl;
 
-    for (DijkstraReturn result : firstRunResult) {
+    for (AlgorithmReturn result : firstRunResult) {
         cout << "Sequência: ";
         for (int elem : result.sequence) {
             cout << elem << ", ";
@@ -213,7 +219,18 @@ int main(int argc, char* argv[]) {
 
     cout << "----- Busca local -----" << endl;
 
-    for (VNDReturn result : vndResults) {
+    for (AlgorithmReturn result : vndResults) {
+        cout << "Sequência: ";
+        for (int elem : result.sequence) {
+            cout << elem << ", ";
+        }
+        cout << endl;
+        cout << "Custo: " << result.cost << endl;
+    }
+
+    cout << "----- Meta-heurística -----" << endl;
+
+    for (AlgorithmReturn result : ilsResults) {
         cout << "Sequência: ";
         for (int elem : result.sequence) {
             cout << elem << ", ";
