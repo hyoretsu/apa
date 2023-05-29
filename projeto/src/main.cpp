@@ -210,22 +210,25 @@ int main(int argc, char* argv[]) {
     vector<vector<int>> allLinesResult;
 
     for (int i = 0; i < info.manufacturingLines; i++) {
+            allLinesResult.resize(firstRunResult.size());
             allLinesResult[i] = firstRunResult[i].sequence;
     }
-            
+    
     for (DijkstraReturn result : firstRunResult) {
             VariableNeighborhoodDescent<int> vnd = VariableNeighborhoodDescent<int>(graph, allLinesResult);
-
-            vndResult.resize(firstRunResult.size());
-
-            for (int j = 0; j < 10; j++) {
+            
+            vndResult.resize(allLinesResult.size());
+            
+            for (int j = 0; j < 1; j++) {
                 vndResult[i].push_back(vnd.execute(allLinesResult, info.manufacturingLines));
             }
             
             i++;
         }
 
-        
+    /*    
+    cout << "+---------------------+" << endl;
+
     for (vector<DijkstraReturn> resultArr : vndResult) {
         cout << "teste" << endl;
         for (int i = 0; i < resultArr.size(); i++) {
@@ -239,7 +242,7 @@ int main(int argc, char* argv[]) {
                 cout << "--------------" << endl;
             }
         }
-
+    */
 
         
     // Liberando memória

@@ -13,7 +13,7 @@ private:
     // Suponha que costFunction seja a função objetivo que retorna a qualidade da solução atual
     Graph &graph;
 
-    vector<vector<int>> bestSequence; // melhor sequência encontrada
+    vector<vector<T>> bestSequence; // melhor sequência encontrada
 
     std::vector<std::pair<int, int>> swapHistory; // histórico de trocas
 
@@ -64,13 +64,13 @@ public:
     DijkstraReturn execute(std::vector<vector<T>>& arr, int manufacturingLine) {
         int i = 0;
         int moviments = 0;
-        int maxMoviments = 3;
+        int maxMoviments = 2;
 
         float currentObjective;
         float bestValues;
 
         vector<float> currentCost;
-
+        
         for (int i = 0; i < manufacturingLine; i++) {
             bestSequence = arr;
             currentObjective = graph.calculateCost(bestSequence[i], true);
@@ -82,8 +82,9 @@ public:
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> dis(0, arr[0].size() - 1);
-
+        
         while (moviments < maxMoviments) {
+            
             std::vector<T> newSolution = bestSequence[i];
             
             if (moviments == 0) {
@@ -100,24 +101,32 @@ public:
                 applyReverseSubsequence(newSolution);
             }
 
-            int i = dis(gen);
-            int j = dis(gen);
-            applySwapL(bestSequence, manufacturingLine, i, j);
-
+            // int i = dis(gen);
+            // int j = dis(gen);
+            // applySwapL(bestSequence, manufacturingLine, i, j);
+            
             float finalSolution = graph.calculateCost(newSolution, true);
-
+            
+            cout << "Final Souliton: " << finalSolution << endl;
+            cout << "New Souliton 0: " << newSolution[0] << endl;
+            cout << "New Souliton 1: " << newSolution[1] << endl;
+            
             if (finalSolution < currentCost[i]) {
-                bestSequence[i] = finalSolution;
-                currentCost[i] = newSolution[i];
+                bestSequence[i] = newSolution;
+                currentCost[i] = finalSolution;
                 moviments = 0;
+
             } else {
                 moviments++;
+                if (i == manufacturingLine - 1) {
+                    i = 0;
+                } else {
+                    i++;
+                }
             }
-
-            i++;
+            
         }
         
-
         DijkstraReturn result = {bestSequence[i], static_cast<float>(currentCost[i])};
         
         return result;
