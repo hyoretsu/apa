@@ -121,6 +121,13 @@ int main(int argc, char* argv[]) {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 #endif
+    if (argc == 0) {
+        cout << "Por favor, passe o caminho de um arquivo" << endl;
+    } else if (argc > 2) {
+        cout << "Argumentos inválidos, apenas 1 arquivo é suportado" << endl;
+
+        return 1;
+    }
 
     TimeTracker timeTracker = TimeTracker();
 
