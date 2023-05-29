@@ -40,8 +40,8 @@ void Heap<T>::erase() {
 }
 
 template<typename T>
-std::vector<T>* Heap<T>::expose() {
-    return &this->arr;
+std::vector<T>& Heap<T>::expose() {
+    return this->arr;
 }
 
 template<typename T>
