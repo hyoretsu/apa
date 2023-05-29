@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
 
     timeTracker.lap("execução do VND");
 
-    cout << "----- Guloso -----" << endl;
+    cout << "----- Algoritmo guloso -----" << endl;
 
     for (DijkstraReturn result : firstRunResult) {
         cout << "Sequência: ";
