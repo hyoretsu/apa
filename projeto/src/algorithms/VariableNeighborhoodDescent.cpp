@@ -33,11 +33,6 @@ private:
         int i = random(0, arr[x].size() - 1);
         int j = random(0, arr[y].size() - 1);
 
-        while (i == j) {
-            i = random(0, arr.size() - 1);
-            j = random(0, arr.size() - 1);
-        }
-
         auto tmp = arr[x][i];
         arr[x][i] = arr[y][j];
         arr[y][j] = tmp;

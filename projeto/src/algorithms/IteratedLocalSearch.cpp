@@ -5,7 +5,7 @@
 template<typename T>
 class IteratedLocalSearch {
 private:
-    VariableNeighborhoodDescent<T> vnd;
+    VariableNeighborhoodDescent<T>& vnd;
 public:
     IteratedLocalSearch(VariableNeighborhoodDescent<T>& vnd) : vnd(vnd) {}
 
