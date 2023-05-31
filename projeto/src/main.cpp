@@ -100,6 +100,7 @@ int main(int argc, char* argv[]) {
 
     timeTracker.lap("execução do ILS");
 
+    // Troque para false para visualizar a sequência e o custo de cada linha de produção para cada algoritmo
     std::vector<float> maxCosts = printDetails(greedyResult, vndResult, ilsResult, true);
 
     // Liberando memória
